@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RecoBook</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="stile.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="grad">
+    <div class="container">
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="images/logo.png" alt="RecoBook" width="100" height="100">
+            <h2 class="fonte">RecoBook</h2>
+            <p class="lead">RecoBook é um site de recomendação de livros</p>
+        </div>
+
+        <div class="row col-lg-12">
+            <h4 class="py-5">Recomende um livro</h4>
+            <form class="needs-validation" novalidate>
+
+                <div class="row col-lg-12">
+                    <label for="nome" class="w-25 form-label">Nome</label>
+                    <input type="text" class="w-75 form-control " id="nome" placeholder="A bela e a fera">
+                </div><br/>
+
+                <div class="row col-lg-12 mb-4">
+                    <label for="sinopse" class="w-25 form-label">Sinopse</label>
+                    <input type="text" class="w-75 form-control " id="sinopse" placeholder="O livro conta a história sobre fulana de tal...">
+                </div>
+
+                <div class="row col-lg-12 mb-4">
+                    <label for="opiniao" class="w-25 form-label">Sua opinião</label>
+                    <input type="text" class="w-75 form-control" id="opiniao" placeholder="Amei o livro, a história é fascinante porque...">
+                </div>
+
+                <div class="row col-lg-12 mb-4">
+                    <label for="nota" class="w-25 form-label">Sua nota de 0 a 5</label>
+                    <input type="range" class="custom-range w-75" min="0" max="5" id="nota">
+                </div>
+
+                <button class="w-25 btn btn-primary btn-lg centralizar" id="enviar">Recomendar</button>
+
+                <h4 class="py-3">Recomendações</h4>
+                <button class="w-25 btn btn-primary btn-lg centralizar" id="atualizar">Atualizar</button>
+                <div class="py-5 row col-lg-12">
+                    <table class="table table-striped table-hover" id="tabela"></table>
+                </div>
+
+            </form>
+        </div>
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">&copy; 2022. Islaine Alves.</p>
+        </footer>
+    </div>
+</div>
+
+
+<script>
+    //Define url
+    let url = "https://recobook-web.herokuapp.com/livro";
+
+    //Declara botoes
+    var botaoSalvar = document.getElementById("enviar");
+    botaoSalvar.addEventListener("click", cadastraLivro);
+
+    var botaoAtualizar = document.getElementById("atualizar");
+    botaoAtualizar.addEventListener("click", atualiza);
+
+    let nome = document.getElementById("nome")
+    let sinopse = document.getElementById("sinopse")
+    let opiniao = document.getElementById("opiniao")
+    let nota = document.getElementById("nota")
+
+    //funcao pra adicinar as linhas na tabela
+    function criaLinha(usuario) {
+        linha = document.createElement("tr");
+        tdId = document.createElement("td");
+        tdNome = document.createElement("td");
+        tdSinopse = document.createElement("td");
+        tdOpniao = document.createElement("td");
+        tdNota = document.createElement("td");
+        td = document.createElement("td");
+
+        tdId.innerHTML = usuario.id
+        td.innerHTML = "     "
+        tdNome.innerHTML = usuario.nome
+        tdSinopse.innerHTML = usuario.sinopse
+        tdOpniao.innerHTML = usuario.opiniao
+        tdNota.innerHTML = usuario.nota
+
+        linha.appendChild(tdId);
+        linha.appendChild(td);
+        linha.appendChild(tdNome);
+        linha.appendChild(tdSinopse);
+        linha.appendChild(tdOpniao);
+        linha.appendChild(tdNota);
+
+        return linha;
+    }
+
+    //funcao principal pra fazer o get e preencher a tabela
+    function main() {
+        //Faz o GET
+        let request = new XMLHttpRequest()
+        request.open("GET", url, false)
+        request.send()
+        let data = request.responseText
+
+        //Pega o JSON e preenche a tabela com os dados
+        let usuarios = JSON.parse(data);
+        let tabela = document.getElementById("tabela");
+        tabela.innerHTML = "";
+
+        nome.value = ""
+        sinopse.value = ""
+        opiniao.value = ""
+        nota.value = ""
+
+        usuarios.forEach(element => {
+            let linha = criaLinha(element);
+            tabela.appendChild(linha);
+        });
+    }
+
+
+    function atualiza() {
+        event.preventDefault()
+        main()
+    }
+
+    //POST
+    function fazPost(url, body) {
+        console.log("Body=", body)
+        let request = new XMLHttpRequest()
+        request.open("POST", url, true)
+        request.setRequestHeader("Content-type", "application/json")
+        request.send(JSON.stringify(body))
+
+        request.onload = function() {
+            console.log(this.responseText)
+        }
+
+        return request.responseText
+    }
+
+
+    function cadastraLivro() {
+        event.preventDefault()
+
+        body = {
+            "nome": nome.value,
+            "sinopse": sinopse.value,
+            "opiniao": opiniao.value,
+            "nota": nota.value
+        }
+        fazPost(url, body)
+
+        main()
+    }
+
+</script>
+
+
+</body>
+
+</html>
