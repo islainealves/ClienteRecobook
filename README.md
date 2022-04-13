@@ -4,7 +4,7 @@ O Recobook é um web client simples criado para consumir os dados da API publica
 https://recobook-web.herokuapp.com/livro
 
 ## Tecnologias usadas
-HTML, css, Famework Bootstrap e javascript puro.
+HTML, CSS, Framework Bootstrap e Javascript puro.
 
 ## Passo a passo para executar:
 - Clonar o repositório:
