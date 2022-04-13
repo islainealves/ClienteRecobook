@@ -1,6 +1,6 @@
 # Recobook - Site de recomendação de livros
 
-O Recobook é um web client simples criado para consumir os dados da API publicada no heroku:
+Web Client simples criado para consumir os dados da API publicada no heroku:
 https://recobook-web.herokuapp.com/livro
 
 ## Tecnologias usadas
